@@ -1,0 +1,11 @@
+{application, rets, [
+    {description, "Redis flavoured Erlang ETS cache interface"},
+    {vsn, git},
+    {registered, []},
+    {applications, [kernel,
+                    stdlib]},
+    {env, []},
+    {maintainers, ["Thiago Camargo"]},
+    {licenses, ["Apache License 2.1"]},
+    {links, [{"Github", "https://github.com/xmppjingle/rets"}]}
+]}.
