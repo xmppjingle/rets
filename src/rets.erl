@@ -12,6 +12,7 @@
     hset/4,
     hget/3,
     hgetall/2,
+    hlen/2,
     hdel/3,
     del/2]).
 
@@ -58,6 +59,12 @@ hget(DB, Key, Field) ->
     case get(DB, Key) of
         #{Field := Value} -> Value;
         _ -> undefined
+    end.
+
+hlen(DB, Key) ->
+    case get(DB, Key) of
+        #{} = M -> maps:size(M);
+        _ -> 0
     end.
 
 hset(DB, Key, Field, Value) ->
