@@ -79,7 +79,7 @@ hdel(DB, Key, Field) ->
     case get(DB, Key) of
         Map when is_map(Map) -> 
             NMap = case maps:remove(Field, Map) of                
-                #{} = M when map_size(M) ==0 -> 
+                #{} = M when map_size(M) == 0 -> 
                     del(DB, Key), #{};
                 Map -> 
                     Map;
@@ -87,7 +87,7 @@ hdel(DB, Key, Field) ->
                     set(DB, Key, R), R
             end,
             maps:size(NMap);
-        _ -> undefined
+        _ -> 0
     end.      
 
 del(DB, Key) -> 
