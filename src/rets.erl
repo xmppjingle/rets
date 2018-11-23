@@ -23,7 +23,7 @@ init(_Args) ->
     {ok, #{}}.
 
 handle_call({create, DB}, From, S) ->
-    spawn(ets, new, [DB, [set, named_table, public]]),
+    spawn(ets, new, [DB, [set, named_table, public, {heir, self(), S}]]),
     {reply, ok, S#{DB => From}};
 
 handle_call(_, _From, S) ->
