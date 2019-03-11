@@ -1,7 +1,7 @@
 -module(rets).
 -behaviour(gen_server).
 
--export([start_link/0]).
+-export([start/0, start_link/0]).
 -export([init/1, handle_call/3, handle_cast/2]).
 -export([terminate/2, handle_info/2, code_change/3]).
 
@@ -15,6 +15,9 @@
     hlen/2,
     hdel/3,
     del/2]).
+
+start() ->
+    gen_server:start({local, ?MODULE}, ?MODULE, [], []).
 
 start_link() ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [], []).
@@ -32,6 +35,9 @@ handle_call(_, _From, S) ->
 handle_cast(_, S) ->
     {noreply, S}.
 
+handle_info({"ETS-TRANSFER", Table, _PID, _D}, S) ->
+    ets:give_away(Table, self(), {}),
+    {noreply, S};
 handle_info(_, S) ->
     {noreply, S}.
 
