@@ -11,8 +11,11 @@ setup() ->
 
 teardown(Pid) ->
     unlink(Pid),
+    MRef = monitor(process, Pid),
     exit(Pid, shutdown),
-    timer:sleep(10).
+    receive {'DOWN', MRef, process, Pid, _} -> ok
+    after 5000 -> ok
+    end.
 
 unique_db(Base) ->
     Ref = erlang:unique_integer([positive]),

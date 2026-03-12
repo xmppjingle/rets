@@ -11,8 +11,11 @@ setup() ->
 
 teardown(Pid) ->
     unlink(Pid),
+    MRef = monitor(process, Pid),
     exit(Pid, shutdown),
-    timer:sleep(10).
+    receive {'DOWN', MRef, process, Pid, _} -> ok
+    after 5000 -> ok
+    end.
 
 unique_db(Base) ->
     Ref = erlang:unique_integer([positive]),
@@ -50,8 +53,8 @@ test_set_get_throughput(_Pid) ->
         end),
         WriteOps = N * 1000000 / WriteUs,
         ReadOps = N * 1000000 / ReadUs,
-        ?debugFmt("~nset/get ~p ops: write=~.0f ops/s, read=~.0f ops/s",
-                  [N, WriteOps, ReadOps]),
+        ?debugFmt("~nset/get ~p ops: write=~w ops/s, read=~w ops/s",
+                  [N, round(WriteOps), round(ReadOps)]),
         %% Generous threshold: 100K ops in under 10s
         ?assert(WriteUs < 10000000),
         ?assert(ReadUs < 10000000)
@@ -82,8 +85,8 @@ test_hset_hget_throughput(_Pid) ->
         end),
         WriteOps = N * 1000000 / WriteUs,
         ReadOps = N * 1000000 / ReadUs,
-        ?debugFmt("~nhset/hget ~p ops: write=~.0f ops/s, read=~.0f ops/s",
-                  [N, WriteOps, ReadOps]),
+        ?debugFmt("~nhset/hget ~p ops: write=~w ops/s, read=~w ops/s",
+                  [N, round(WriteOps), round(ReadOps)]),
         ?assert(WriteUs < 30000000),
         ?assert(ReadUs < 10000000)
     end}.
@@ -114,8 +117,8 @@ test_concurrent_reads(_Pid) ->
         end),
         TotalOps = NumProcs * OpsPerProc,
         Ops = TotalOps * 1000000 / Us,
-        ?debugFmt("~nconcurrent reads (~p procs x ~p): ~.0f ops/s",
-                  [NumProcs, OpsPerProc, Ops]),
+        ?debugFmt("~nconcurrent reads (~p procs x ~p): ~w ops/s",
+                  [NumProcs, OpsPerProc, round(Ops)]),
         ?assert(Us < 10000000)
     end}.
 
@@ -144,8 +147,8 @@ test_concurrent_writes(_Pid) ->
         end),
         TotalOps = NumProcs * OpsPerProc,
         Ops = TotalOps * 1000000 / Us,
-        ?debugFmt("~nconcurrent writes (~p procs x ~p): ~.0f ops/s",
-                  [NumProcs, OpsPerProc, Ops]),
+        ?debugFmt("~nconcurrent writes (~p procs x ~p): ~w ops/s",
+                  [NumProcs, OpsPerProc, round(Ops)]),
         ?assert(Us < 10000000)
     end}.
 
@@ -183,8 +186,8 @@ test_concurrent_mixed(_Pid) ->
         end),
         TotalOps = (NumReaders + NumWriters) * OpsPerProc,
         Ops = TotalOps * 1000000 / Us,
-        ?debugFmt("~nconcurrent mixed (~p readers + ~p writers x ~p): ~.0f ops/s",
-                  [NumReaders, NumWriters, OpsPerProc, Ops]),
+        ?debugFmt("~nconcurrent mixed (~p readers + ~p writers x ~p): ~w ops/s",
+                  [NumReaders, NumWriters, OpsPerProc, round(Ops)]),
         ?assert(Us < 10000000)
     end}.
 
@@ -206,7 +209,7 @@ test_hdel_churn(_Pid) ->
             end, lists:seq(1, N))
         end),
         Ops = N * 2 * 1000000 / Us,
-        ?debugFmt("~nhdel churn ~p cycles (~p ops): ~.0f ops/s",
-                  [N, N * 2, Ops]),
+        ?debugFmt("~nhdel churn ~p cycles (~p ops): ~w ops/s",
+                  [N, N * 2, round(Ops)]),
         ?assert(Us < 30000000)
     end}.
