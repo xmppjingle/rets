@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        otp: ['25', '26', '27']
+    container:
+      image: erlang:${{ matrix.otp }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install rebar3
+        run: |
+          wget https://s3.amazonaws.com/rebar3/rebar3
+          chmod +x rebar3
+          mv rebar3 /usr/local/bin/
+
+      - name: Compile
+        run: rebar3 compile
+
+      - name: Xref
+        run: rebar3 xref
+
+      - name: Dialyzer
+        run: rebar3 dialyzer
+
+      - name: EUnit tests
+        run: rebar3 eunit --verbose
+
+      - name: Cover report
+        run: rebar3 cover --verbose
+
+  perf:
+    runs-on: ubuntu-latest
+    needs: test
+    container:
+      image: erlang:26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install rebar3
+        run: |
+          wget https://s3.amazonaws.com/rebar3/rebar3
+          chmod +x rebar3
+          mv rebar3 /usr/local/bin/
+
+      - name: Performance tests
+        run: rebar3 eunit --module=rets_perf_tests --verbose
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Docker build and test
+        run: docker compose run --rm test

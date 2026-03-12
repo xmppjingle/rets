@@ -1,0 +1,17 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: rebar3 do compile, xref, eunit --verbose, cover
+
+  perf:
+    build:
+      context: .
+      dockerfile: Dockerfile.perf
+    command: rebar3 eunit --module=rets_perf_tests --verbose
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 512M
