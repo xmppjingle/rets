@@ -95,7 +95,7 @@ hset(DB, Key, Field, Value) ->
         Map when is_map(Map) -> Map#{Field => Value};
         _ -> #{Field => Value}
     end,
-    set(DB, Key, NMap),
+    _ = set(DB, Key, NMap),
     maps:size(NMap).
 
 -spec hdel(db(), key(), field()) -> non_neg_integer().
@@ -109,10 +109,10 @@ hdel(DB, Key, Field) ->
                     NewMap = maps:remove(Field, Map),
                     case map_size(NewMap) of
                         0 ->
-                            del(DB, Key),
+                            _ = del(DB, Key),
                             0;
                         Size ->
-                            set(DB, Key, NewMap),
+                            _ = set(DB, Key, NewMap),
                             Size
                     end
             end;
