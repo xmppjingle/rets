@@ -39,6 +39,7 @@ jobs:
         run: rebar3 cover --verbose
 
       - name: Generate Cobertura XML
+        if: matrix.otp == '27'
         run: rebar3 covertool generate
 
       - name: Upload coverage to Codecov
