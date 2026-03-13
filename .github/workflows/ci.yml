@@ -17,12 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install rebar3
-        run: |
-          wget https://s3.amazonaws.com/rebar3/rebar3
-          chmod +x rebar3
-          mv rebar3 /usr/local/bin/
-
       - name: Compile
         run: rebar3 compile
 
@@ -33,7 +27,7 @@ jobs:
         run: rebar3 dialyzer
 
       - name: EUnit tests
-        run: rebar3 eunit --verbose
+        run: rebar3 eunit --module=rets_tests --verbose
 
       - name: Cover report
         run: rebar3 cover --verbose
@@ -45,12 +39,6 @@ jobs:
       image: erlang:26
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install rebar3
-        run: |
-          wget https://s3.amazonaws.com/rebar3/rebar3
-          chmod +x rebar3
-          mv rebar3 /usr/local/bin/
 
       - name: Performance tests
         run: rebar3 eunit --module=rets_perf_tests --verbose

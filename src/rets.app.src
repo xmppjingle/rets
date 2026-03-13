@@ -1,6 +1,6 @@
 {application, rets, [
     {description, "Redis flavoured Erlang ETS cache interface"},
-    {vsn, git},
+    {vsn, "0.1.0"},
     {registered, [rets]},
     {applications, [kernel,
                     stdlib]},
