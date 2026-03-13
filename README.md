@@ -1,5 +1,11 @@
 # rets
 
+[![CI](https://github.com/xmppjingle/rets/actions/workflows/ci.yml/badge.svg)](https://github.com/xmppjingle/rets/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/xmppjingle/rets/graph/badge.svg)](https://codecov.io/gh/xmppjingle/rets)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Erlang/OTP](https://img.shields.io/badge/Erlang%2FOTP-25%2B-green.svg)](https://www.erlang.org/)
+[![GitHub issues](https://img.shields.io/github/issues/xmppjingle/rets.svg)](https://github.com/xmppjingle/rets/issues)
+
 **Zero-latency, Redis-flavored caching for the BEAM — up to 30x faster than Redis.**
 
 `rets` is a lightweight gen_server wrapper around ETS (Erlang Term Storage) that provides a familiar Redis-like API for in-memory key-value and hash operations. No network hop, no serialization overhead, no external dependencies — just raw BEAM speed with an API you already know.

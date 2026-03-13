@@ -38,6 +38,17 @@ jobs:
       - name: Cover report
         run: rebar3 cover --verbose
 
+      - name: Generate Cobertura XML
+        run: rebar3 covertool generate
+
+      - name: Upload coverage to Codecov
+        if: matrix.otp == '27'
+        uses: codecov/codecov-action@v4
+        with:
+          files: _build/test/covertool/rets.covertool.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   perf:
     runs-on: ubuntu-latest
     needs: test
